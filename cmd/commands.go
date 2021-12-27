@@ -34,6 +34,9 @@ func init() {
 			log.Fatal(err)
 		}
 	}
+
+	// have subcommand
+	storeCmd.AddCommand(commandCmd)
 }
 
 var versionCmd = &cobra.Command{
@@ -63,5 +66,13 @@ var storeCmd = &cobra.Command{
 		// if err != nil {
 		// 	panic(err)
 		// }
+	},
+}
+
+var commandCmd = &cobra.Command{
+	Use:   "command",
+	Short: "Define the command to be executed with the alias",
+	Long:  `Define the command to be executed with the alias`,
+	Run: func(cmd *cobra.Command, args []string) {
 	},
 }
