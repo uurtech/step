@@ -5,6 +5,7 @@ Copyright © 2021 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -15,18 +16,22 @@ var rootCmd = &cobra.Command{
 	Use:   "step",
 	Short: "Creates alias for your favorite SSH commands",
 	Long: `You can create alias for your favorite SSH and SCP commands:
-		You can search for them.
-		You can edit
-		You can have fun!
 		No need to Search in Bash History !
 		`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(`
+		-h			help
+		store			Saves the alias for the spesified ssh
+		update			Save alias with a key path
+		command 		define the command to be executed with the alias	
+		============
+		Create Alias
+		============
+		step store demo_1 command "ssh user@host"
+	`)
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
