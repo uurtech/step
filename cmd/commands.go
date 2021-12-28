@@ -81,6 +81,7 @@ var storeCmd = &cobra.Command{
 			panic(err)
 		}
 		fmt.Println("Command stored")
+		loadCMD.Run(cmd, args)
 	},
 }
 
