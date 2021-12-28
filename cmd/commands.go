@@ -139,8 +139,8 @@ var initCMD = &cobra.Command{
 
 		switch shell {
 		case "/bin/zsh\n":
-			if !search(path+"./zshrc/", tempPath) {
-				fmt.Print("you have run init before")
+			if search(path+"/.zshrc", tempPath) {
+				fmt.Println("you have run init before")
 				return
 			}
 			f, err := os.OpenFile(path+"/.zshrc", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
