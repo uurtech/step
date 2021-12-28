@@ -117,14 +117,40 @@ var initCMD = &cobra.Command{
 	Short: "Initialize your favorite SSH commands",
 	Long:  `Initialize your favorite SSH commands`,
 	Run: func(cmd *cobra.Command, args []string) {
-
+		usr, err := user.Current()
+		if err != nil {
+			log.Fatal(err)
+		}
+		path := usr.HomeDir
 		shCmd := exec.Command("sh", "-c", "echo \"$SHELL\"")
 		output, _ := shCmd.CombinedOutput()
 		shell := string(output)
-		fmt.Printf("Your shell is %s\n", shell)
+		tempPath := path + "/.step/steps.sh"
+
+		if _, err := os.Stat(tempPath); os.IsNotExist(err) {
+			f, err := os.Create(tempPath)
+			if err != nil {
+				panic(err)
+			}
+			defer f.Close()
+		}
+
 		switch shell {
 		case "/bin/zsh\n":
-			print("zsh detected")
+
+			f, err := os.OpenFile(path+"/.zshrc", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+			if err != nil {
+				panic(err)
+			}
+
+			defer f.Close()
+			if _, err := f.Write([]byte("source " + tempPath)); err != nil {
+				log.Fatal(err)
+			}
+			if err := f.Close(); err != nil {
+				log.Fatal(err)
+			}
 		}
 
 	},
