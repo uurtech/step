@@ -19,7 +19,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	path := usr.HomeDir + "/step/"
+	path := usr.HomeDir + "/.step/"
 	dbPath = path + "data.db"
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		os.Mkdir(path, 0755)
