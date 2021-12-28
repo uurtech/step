@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
 		============
 		Create Alias
 		============
-		step store demo_1 command "ssh user@host"
+		step store demo_1 -c "ssh user@host"
 	`)
 	},
 }

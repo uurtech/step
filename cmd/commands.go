@@ -36,7 +36,9 @@ func init() {
 	}
 
 	// have subcommand
-	storeCmd.AddCommand(commandCmd)
+	// storeCmd.AddCommand(commandCmd)
+	storeCmd.PersistentFlags().String("c", "", "pass the command to be executed")
+
 }
 
 var versionCmd = &cobra.Command{
@@ -52,12 +54,14 @@ var storeCmd = &cobra.Command{
 	Use:   "store",
 	Short: "Store your favorite SSH commands",
 	Long:  `Store your favorite SSH commands`,
+	Args:  cobra.MinimumNArgs(2),
+
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%s\n", args)
-		_, err := sql.Open("sqlite3", dbPath)
-		if err != nil {
-			panic(err)
-		}
+		// _, err := sql.Open("sqlite3", dbPath)
+		// if err != nil {
+		// 	panic(err)
+		// }
 		// _, err := db.Prepare("INSERT INTO remotes(alias, keypath, machine) values(?,?,?)")
 		// if err != nil {
 		// 	panic(err)
@@ -66,13 +70,5 @@ var storeCmd = &cobra.Command{
 		// if err != nil {
 		// 	panic(err)
 		// }
-	},
-}
-
-var commandCmd = &cobra.Command{
-	Use:   "command",
-	Short: "Define the command to be executed with the alias",
-	Long:  `Define the command to be executed with the alias`,
-	Run: func(cmd *cobra.Command, args []string) {
 	},
 }
