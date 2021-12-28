@@ -56,22 +56,26 @@ var storeCmd = &cobra.Command{
 	Short:            "Store your favorite SSH commands",
 	Long:             `Store your favorite SSH commands`,
 	TraverseChildren: true,
+	Args:             cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if Command == "" {
 			fmt.Println("Command is required")
 			return
 		}
-		// _, err := sql.Open("sqlite3", dbPath)
-		// if err != nil {
-		// 	panic(err)
-		// }
-		// _, err := db.Prepare("INSERT INTO remotes(alias, keypath, machine) values(?,?,?)")
-		// if err != nil {
-		// 	panic(err)
-		// }
-		// _, err = stmt.Exec(remote.Alias, remote.KeyPath, remote.Machine)
-		// if err != nil {
-		// 	panic(err)
-		// }
+		alias := args[0]
+
+		db, err := sql.Open("sqlite3", dbPath)
+		if err != nil {
+			panic(err)
+		}
+		stmt, err := db.Prepare("INSERT INTO commands(alias, command) values(?,?)")
+		if err != nil {
+			panic(err)
+		}
+		_, err = stmt.Exec(alias, Command)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("Command stored")
 	},
 }
