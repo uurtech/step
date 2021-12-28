@@ -3,10 +3,12 @@ package cmd
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"os/user"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/cobra"
@@ -137,7 +139,10 @@ var initCMD = &cobra.Command{
 
 		switch shell {
 		case "/bin/zsh\n":
-
+			if !search(path+"./zshrc/", tempPath) {
+				fmt.Print("you have run init before")
+				return
+			}
 			f, err := os.OpenFile(path+"/.zshrc", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 			if err != nil {
@@ -145,7 +150,7 @@ var initCMD = &cobra.Command{
 			}
 
 			defer f.Close()
-			if _, err := f.Write([]byte("source " + tempPath)); err != nil {
+			if _, err := f.Write([]byte("source " + tempPath + "\n")); err != nil {
 				log.Fatal(err)
 			}
 			if err := f.Close(); err != nil {
@@ -211,4 +216,15 @@ var loadCMD = &cobra.Command{
 		println("Loaded")
 
 	},
+}
+
+func search(path string, search string) bool {
+	// read the whole file at once
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	s := string(b)
+	// //check whether s contains substring text
+	return strings.Contains(s, search)
 }
