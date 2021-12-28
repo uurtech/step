@@ -50,4 +50,5 @@ func init() {
 	// when this action is called directly.
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(storeCmd)
+	rootCmd.AddCommand(listCmd)
 }

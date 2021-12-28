@@ -80,3 +80,33 @@ var storeCmd = &cobra.Command{
 		fmt.Println("Command stored")
 	},
 }
+
+var listCmd = &cobra.Command{
+	Use:              "list",
+	Short:            "List your favorite SSH commands",
+	Long:             `List your favorite SSH commands`,
+	TraverseChildren: true,
+	Run: func(cmd *cobra.Command, args []string) {
+		db, err := sql.Open("sqlite3", dbPath)
+		if err != nil {
+			panic(err)
+		}
+		rows, err := db.Query("SELECT * FROM commands")
+		if err != nil {
+			panic(err)
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var id int
+			var alias string
+			var command string
+			err = rows.Scan(&id, &alias, &command)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println("==============================================================================")
+			fmt.Printf("%d \t alias: %s - Command: %s\n", id, alias, command)
+			fmt.Println("==============================================================================")
+		}
+	},
+}
