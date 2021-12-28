@@ -12,6 +12,7 @@ import (
 )
 
 var dbPath string
+var Command string
 
 func init() {
 	usr, err := user.Current()
@@ -37,7 +38,7 @@ func init() {
 
 	// have subcommand
 	// storeCmd.AddCommand(commandCmd)
-	storeCmd.PersistentFlags().String("c", "", "pass the command to be executed")
+	storeCmd.Flags().StringVarP(&Command, "command", "c", "", "pass command to execute")
 
 }
 
@@ -51,13 +52,15 @@ var versionCmd = &cobra.Command{
 }
 
 var storeCmd = &cobra.Command{
-	Use:   "store",
-	Short: "Store your favorite SSH commands",
-	Long:  `Store your favorite SSH commands`,
-	Args:  cobra.MinimumNArgs(2),
-
+	Use:              "store",
+	Short:            "Store your favorite SSH commands",
+	Long:             `Store your favorite SSH commands`,
+	TraverseChildren: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("%s\n", args)
+		if Command == "" {
+			fmt.Println("Command is required")
+			return
+		}
 		// _, err := sql.Open("sqlite3", dbPath)
 		// if err != nil {
 		// 	panic(err)
