@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"os/user"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -108,5 +109,56 @@ var listCmd = &cobra.Command{
 			fmt.Printf("%d \t alias: %s - Command: %s\n", id, alias, command)
 			fmt.Println("==============================================================================")
 		}
+	},
+}
+
+var initCMD = &cobra.Command{
+	Use:   "init",
+	Short: "Initialize your favorite SSH commands",
+	Long:  `Initialize your favorite SSH commands`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		shCmd := exec.Command("sh", "-c", "echo \"$SHELL\"")
+		output, _ := shCmd.CombinedOutput()
+		shell := string(output)
+		fmt.Printf("Your shell is %s\n", shell)
+		switch shell {
+		case "/bin/zsh\n":
+			print("zsh detected")
+		}
+
+	},
+}
+
+var loadCMD = &cobra.Command{
+	Use:              "load",
+	Short:            "Load your favorite SSH commands",
+	Long:             `Load your favorite SSH commands`,
+	TraverseChildren: true,
+	Run: func(cmd *cobra.Command, args []string) {
+		db, err := sql.Open("sqlite3", dbPath)
+		if err != nil {
+			panic(err)
+		}
+		rows, err := db.Query("SELECT * FROM commands")
+		if err != nil {
+			panic(err)
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var id int
+			var alias string
+			var command string
+			err = rows.Scan(&id, &alias, &command)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println("==============================================================================")
+			fmt.Printf("%d \t alias: %s - Command: %s\n", id, alias, command)
+			fmt.Println("==============================================================================")
+		}
+
+		//create file
+
 	},
 }
