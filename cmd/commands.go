@@ -162,6 +162,18 @@ var loadCMD = &cobra.Command{
 	Long:             `Load your favorite SSH commands`,
 	TraverseChildren: true,
 	Run: func(cmd *cobra.Command, args []string) {
+		usr, err := user.Current()
+		if err != nil {
+			log.Fatal(err)
+		}
+		path := usr.HomeDir + "/.step/"
+		tempPath := path + "steps.sh"
+
+		e := os.Remove(tempPath)
+		if e != nil {
+			log.Fatal(e)
+		}
+
 		db, err := sql.Open("sqlite3", dbPath)
 		if err != nil {
 			panic(err)
@@ -171,6 +183,8 @@ var loadCMD = &cobra.Command{
 			panic(err)
 		}
 		defer rows.Close()
+		var commands string
+
 		for rows.Next() {
 			var id int
 			var alias string
@@ -179,12 +193,22 @@ var loadCMD = &cobra.Command{
 			if err != nil {
 				panic(err)
 			}
+
 			fmt.Println("==============================================================================")
 			fmt.Printf("%d \t alias: %s - Command: %s\n", id, alias, command)
 			fmt.Println("==============================================================================")
+			commands += "alias " + alias + "='" + command + "'\n"
 		}
 
-		//create file
+		f, err := os.OpenFile(tempPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		if _, err := f.Write([]byte(commands)); err != nil {
+			log.Fatal(err)
+		}
+		println("Loaded")
 
 	},
 }
