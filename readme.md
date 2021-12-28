@@ -1,17 +1,11 @@
 # step
 
-Easy SSH management tool with encryption, you can think of alias for ssh connections with encryption
+Easy Alias Management tool
 
 **Arguments**
 
 ```shell
     step {ALIAS} {COMMAND}
-```
-
-**Store**
-
-```shell
-step store customer_1 -c "ssh user@IP"
 ```
 
 **init**
@@ -20,7 +14,17 @@ step store customer_1 -c "ssh user@IP"
 step init
 ```
 
+**Store**
+
+to create a new alias
+
+```shell
+step store customer_1 -c "ssh user@IP"
+```
+
 **load**
+
+if you have issues on source you can load the source file by calling load method
 
 ```
 step load
