@@ -1,11 +1,11 @@
 # step
 
-Easy Alias Management tool
+Easy Alias Management tool for SSH connections
 
 **Arguments**
 
 ```shell
-    step {ALIAS} {COMMAND}
+step {ALIAS} {COMMAND}
 ```
 
 **init**
